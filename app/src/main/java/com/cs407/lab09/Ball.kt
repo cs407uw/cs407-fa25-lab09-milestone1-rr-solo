@@ -23,7 +23,8 @@ class Ball(
     private var isFirstUpdate = true
 
     init {
-        // TODO: Call reset()
+        // Start the ball in the center with zero velocity and zero acceleration
+        reset()
     }
 
     /**
@@ -38,6 +39,31 @@ class Ball(
             return
         }
 
+        // --- X AXIS ---
+        val v0x = velocityX
+        val a0x = accX
+        val a1x = xAcc
+
+        val v1x = v0x + 0.5f * (a0x + a1x) * dT
+        val dx = v0x * dT + (dT * dT) / 6f * (3f * a0x + a1x)
+
+        velocityX = v1x
+        posX += dx
+
+        // --- Y AXIS ---
+        val v0y = velocityY
+        val a0y = accY
+        val a1y = yAcc
+
+        val v1y = v0y + 0.5f * (a0y + a1y) * dT
+        val dy = v0y * dT + (dT * dT) / 6f * (3f * a0y + a1y)
+
+        velocityY = v1y
+        posY += dy
+
+        // store new accelerations
+        accX = xAcc
+        accY = yAcc
     }
 
     /**
@@ -46,8 +72,38 @@ class Ball(
      * boundary should be set to 0.
      */
     fun checkBoundaries() {
-        // TODO: implement the checkBoundaries function
+        // implement the checkBoundaries function
         // (Check all 4 walls: left, right, top, bottom)
+
+        // Left wall
+        if (posX < 0f) {
+            posX = 0f
+            velocityX = 0f
+            accX = 0f
+        }
+
+        // Right wall
+        val maxX = backgroundWidth - ballSize
+        if (posX > maxX) {
+            posX = maxX
+            velocityX = 0f
+            accX = 0f
+        }
+
+        // Top wall
+        if (posY < 0f) {
+            posY = 0f
+            velocityY = 0f
+            accY = 0f
+        }
+
+        // Bottom wall
+        val maxY = backgroundHeight - ballSize
+        if (posY > maxY) {
+            posY = maxY
+            velocityY = 0f
+            accY = 0f
+        }
     }
 
     /**
@@ -55,7 +111,20 @@ class Ball(
      * velocity and acceleration.
      */
     fun reset() {
-        // TODO: implement the reset function
+        // implement the reset function
         // (Reset posX, posY, velocityX, velocityY, accX, accY, isFirstUpdate)
+
+        // set ball position to the center
+        posX = (backgroundWidth - ballSize) / 2f
+        posY = (backgroundHeight - ballSize) / 2f
+
+        // zero out velocity and acceleration
+        velocityX = 0f
+        velocityY = 0f
+        accX = 0f
+        accY = 0f
+
+        // reset update state
+        isFirstUpdate = true
     }
 }
